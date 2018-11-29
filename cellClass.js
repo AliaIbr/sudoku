@@ -86,17 +86,6 @@ Cell.prototype.calculatePossibleValueList = function (sudokuSize, arrayBox, arra
             possibleValues.splice(index, 1);
         }
     }
-
-    // for (var i=0; i <=sudokuSize; i++){
-    //     console.log("--> " + this.locationX);
-    //     // console.log(arrayColumn[this.locationX]);
-    //     if (arrayColumn[this.locationX].indexOf(parseInt(i)) > -1 || arrayRaw[this.locationY].indexOf(parseInt(i)) > -1  || arrayBox[boxIndex].indexOf(parseInt(i)) > -1) {
-    //         console.log("exist");
-    //     } else {
-    //         console.log("does not exist");
-    //         possibleValues.push[i];    
-    //     }
-    // }
     console.log("the possible after " + possibleValues);
     this.possibleValueList = possibleValues;
         
