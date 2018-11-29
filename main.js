@@ -1,4 +1,4 @@
-var cell = require("./cell.js");
+var cell = require("./cellClass.js");
 // var utils = require("./utils.js");
 var async = require('async');
 const readline = require('readline');
@@ -25,18 +25,36 @@ var recursiveAsyncReadLine = function () {
             var cellCoordinate = answer;
             var chunk = cellCoordinate.split(",");
             
-            var insertCell = new cell.Cell(chunk[0], chunk[1], chunk[2], [1, 2, 3, 4, 5, 6, 7, 8,9]);
-            var possibleValues = cell.possibleValueList(insertCell, sudokuSize, arrayColumn, arrayRaw, arrayBox);
-            console.log("possible values ")
-            console.log("the value will be " + chunk[2])
-            var index = cell.findCellIndex(insertCell, sudokuSize);
+            // find the cell that needs update
+            var insertCell = new cell(chunk[0], chunk[1], chunk[2], [1,2,3,4]);
+            console.log("---- " +insertCell.locationX);
+            var index = insertCell.findCellIndex(sudokuSize);
             console.log("the cell index is " + index);
-            var boxIndex = cell.findBoxIndex(insertCell, Math.sqrt(sudokuSize));
+            var boxIndex = insertCell.findBoxIndex(Math.sqrt(sudokuSize));
             console.log("the box index is " + boxIndex);
-            cellList[index] = insertCell;
-            console.log("the list now is ");
-            console.log(cellList);
-    
+
+            cellList[index].setPosition(chunk[0], chunk[1]);  
+            cellList[index].updateValue(chunk[2]);  
+            var updatedList = [];
+            updatedList = cellList[index].updateSudokuArrays(sudokuSize ,arrayBox, arrayColumn, arrayRaw);
+            arrayBox = updatedList[0];
+            arrayColumn = updatedList[1];
+            arrayRaw = updatedList[2];
+
+            console.log("---column----");
+            console.log(arrayColumn);
+            console.log("---raw----");
+            console.log(arrayRaw);
+            console.log("---box----");
+            console.log(arrayBox);
+
+            cellList[index].calculatePossibleValueList(sudokuSize, arrayBox, arrayColumn, arrayRaw);
+            console.log("the updated possible values to be used is ");
+            console.log(cellList[index].possibleValueList);
+
+            
+           // console.log(cellList);
+
             recursiveAsyncReadLine(); //Calling this function again to ask new question
         }   
     });
@@ -64,9 +82,9 @@ async.series([
                 initialPossibleValues.push(i + 1);
             }
             for (var initiateIter = 0; initiateIter < numberOfCells; initiateIter++) {
-                cellList[initiateIter] = new cell.Cell(0, 0, 0, initialPossibleValues);
+                cellList[initiateIter] = new cell(0, 0, 0, initialPossibleValues);
             }
-           // console.log(cellList);
+           // console.log(cellList.length);
 
             callback();
         });
