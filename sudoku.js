@@ -1,4 +1,5 @@
 var cell = require("./cell.js");
+var utils = require("./utils.js");
 var async = require('async');
 const readline = require('readline');
 
@@ -12,14 +13,27 @@ var cellList;
 var arrayBox, arrayColumn, arrayRaw;
 var ListeIter = [];
 
-var innerBoxSize ;
+
+var recursiveAsyncReadLine = function () {
+    rl.question('insert cell location and value as x,y,value: ', function (answer) {
+      if (answer == 'finish') //we need some base case, for recursion
+        return rl.close(); //closing RL and returning from function.
+        
+        var cellCoordinate = answer;
+            var chunk = cellCoordinate.split(",");
+           // cell.setPosition(chunk[0], chunk[1]);
+            cell.setValue(chunk[2]);
+      
+      recursiveAsyncReadLine(); //Calling this function again to ask new question
+    });
+  };
+  
 
 async.series([
     function (callback) {
-        rl.question('insert sudoku size  ', (answer) => {
+        rl.question('insert sudoku size (example size 4 means 4x4) ', (answer) => {
             sudokuSize = answer;
 
-            innerBoxSize = Math.pow(sudokuSize, 0.5);
             arrayRaw = new Array();
             arrayColumn = new Array();
             arrayBox = new Array();
@@ -31,47 +45,27 @@ async.series([
 
             var numberOfCells = sudokuSize * sudokuSize;
             cellList = new Array();
-            for (var initiateIter = 0; initiateIter < cellList; initiateIter++){
-                cellList[initiateIter] = new cell;
+            var initialPossibleValues = [];
+            for (var i=0; i <sudokuSize; i++){
+                initialPossibleValues.push(i+1);
             }
+            for (var initiateIter = 0; initiateIter < numberOfCells; initiateIter++){
+                cellList[initiateIter] = new cell.Cell(0,0,0,initialPossibleValues);
+            }
+            console.log(cellList);
 
             callback();
         });
     },
     function (callback) {
 
-        ListeIter.length = sudokuSize;
-        var iter = 0;
+        recursiveAsyncReadLine(function(err){
+            if (err){
 
-        async.forEachSeries(ListeIter, function (lineNumber, callbackForeach) {
-            
-            rl.question("insert raw" + iter + " ", function (answer) {
-
-                for (var arraychunk = 0; arraychunk < answer.length; arraychunk++) {
-                    temparray = answer.slice(arraychunk, arraychunk + 1);
-                    if (temparray == "x") {
-                        
-
-                    } else {
-                        arrayRaw[iter].push(temparray);
-                        arrayColumn[arraychunk].push(temparray);
-
-                    }
-
-                }
-                iter = iter + 1;
-                callbackForeach();
-
-            });
-        },
-            function (err) {
-                if (err) {
-                    callback(err);
-                } else {
-               
-                    callback();
-                }
-            });
+            } else {
+                callback();
+            }
+        });
 
 
     },
@@ -81,7 +75,10 @@ async.series([
 
     } else {
         rl.close();
-        console.log("check what is added to the arrays ");
+        console.log(cellList);
+
         
     }
 });
+
+

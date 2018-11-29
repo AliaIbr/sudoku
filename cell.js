@@ -1,30 +1,50 @@
-var value;
-var locationX;
-var locationY; 
-var possibleValueList = [];
 
 
-// methods to define the values 
+exports.Cell = function (locationX, locationY, value, possibleValueList){
+    this.locationX = locationX;
+    this.locationY = locationY;
+    this.value = value;
+    this.possibleValueList = possibleValueList;
+    //this.setValue = setValue();
+}
+
+// function setValue(val){
+//     if (possibleValueList.indexOf(val) > -1 ){
+//         value = val;
+//         updateArrayList(val);
+//         return true; 
+//     } else {
+//         // the values is not in the list of possible values
+//         return false; // the value was not added 
+//         u
+//     }
+// }
+
 
 exports.setValue = function(val){
-    if (val == "x"){
-
-    } else {
-        this.value = val;
-        updateArrayList(val);
-    }
+    value = val;
+    // if (possibleValueList.indexOf(val) > -1 ){
+    //     // the value is in the list of possible values
+    //     value = val;
+    //     updateArrayList(val);
+    //     return true; // the value was added
+    // } else {
+    //     // the values is not in the list of possible values
+    //     return false; // the value was not added 
+    //     u
+    // }
 }
 
 exports.setPosition = function (x,y){
-    this.x = x;
-    this.y = y;
+    locationX = x;
+    locationY = y;
 }
 
 exports.updatePossibleValues = function (takenValue){
     possibleValueList.splice( possibleValueList.indexOf(takenValue), 1 );
 
     if (possibleValueList.length === 1) {
-        this.setValue(possibleValueList[0]);
+        setValue(possibleValueList[0]);
     }
 }
 
@@ -56,6 +76,31 @@ exports.calculatePossibleValues = function (columnList, rawList, boxList){
 
 exports.updateArrayList = function(value){
 
+}
+
+
+exports.findBoxIndex = function (cell, sudokuSize){
+
+    var xBox = cell.x / sudokuSize;
+    var yBox = cell.y / sudokuSize;
+
+    for (var i =0; i < sudokuSize; i++){
+        if  (xBox >= i && xBox < i+1){
+            for (var j = 0;  j < sudokuSize; j++){
+                if (yBox >= j && yBox < j+1){
+                    console.log("the box number is " + (i + (j*sudokuSize) ));
+                    boxNumber = i + (j*sudokuSize);
+                    return boxNumber;
+                }
+            }
+        }
+    }
+
+}
+
+
+function updateArray(array, value){
+    return (array.push(value));
 }
 
 
