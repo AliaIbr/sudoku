@@ -1,3 +1,10 @@
+// const readline = require('readline');
+
+// const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout
+// });
+
 function Cell(locationX, locationY, value, possibleValueList) {
     this.locationX = locationX;
     this.locationY = locationY;
@@ -6,14 +13,14 @@ function Cell(locationX, locationY, value, possibleValueList) {
 }
 
 Cell.prototype.updateValue = function (val) {
-    console.log("updating the values " + val);
-    console.log(this.possibleValueList);
-    if (this.possibleValueList.includes(val) > -1) {
-    //if (this.possibleValueList.indexOf(parseInt(val)) > -1) {
-        console.log("the value is in the possible value list ");
+    // console.log("updating the values " + val);
+    // console.log(this.possibleValueList);
+    if (this.possibleValueList.indexOf(parseInt(val)) > -1) {
+        // console.log("the value is in the possible value list ");
         this.value = val;
     } else {
-        console.log("the value is not available in the possible value list ");
+        console.log("warning: wrong value ");
+        // rl.write("wrong value or value is the same");
     }
 };
 
@@ -62,13 +69,11 @@ Cell.prototype.calculatePossibleValueList = function (sudokuSize, arrayBox, arra
     for (var iter = 1; iter <=sudokuSize; iter++){
         possibleValues.push(iter);
     }
-    console.log("the possible before " + possibleValues);
     
     for (var iter = 0; iter <arrayBox[boxIndex].length; iter++){
        // console.log("==== ");
-        console.log(parseInt(arrayBox[boxIndex][iter]));
+    //    console.log(parseInt(arrayBox[boxIndex][iter]));
         var index = possibleValues.indexOf(parseInt(arrayBox[boxIndex][iter]));
-        console.log("the index " + index);
         if (index > -1) {
             possibleValues.splice(index, 1);
         }
@@ -86,28 +91,28 @@ Cell.prototype.calculatePossibleValueList = function (sudokuSize, arrayBox, arra
             possibleValues.splice(index, 1);
         }
     }
-    console.log("the possible after " + possibleValues);
+    //console.log("the possible valuse " + possibleValues);
     this.possibleValueList = possibleValues;
         
 }
 
 Cell.prototype.updateSudokuArrays = function (sudokuSize, arrayBox, arrayColumn, arrayRaw){
     var boxIndex = this.findBoxIndex(Math.sqrt(sudokuSize));
-    console.log("the value is " + this.value);
-    console.log("the column " + this.locationY);
-    console.log("the raw " + this.locationX);
-    console.log("the box index is " + boxIndex);
+    // console.log("the value is " + this.value);
+    // console.log("the column " + this.locationY);
+    // console.log("the raw " + this.locationX);
+    // console.log("the box index is " + boxIndex);
     
     // if the value does not already exist in the arrays then add it, 
-    if (!arrayColumn[this.locationX].includes(this.value)){
+    if (!arrayColumn[this.locationX].indexOf(parseInt(this.value))){
     //if (arrayColumn[this.locationX].indexOf(parseInt(this.value)) <= -1){
             
         arrayColumn[this.locationX].push(this.value);
     } 
-    if (!arrayRaw[this.locationY].includes(this.value)){
+    if (!arrayRaw[this.locationY].indexOf(parseInt(this.value)) <= -1){
         arrayRaw[this.locationY].push(this.value);
     } 
-    if (!arrayBox[boxIndex].includes(this.value)){
+    if (!arrayBox[boxIndex].indexOf(parseInt(this.value)) <= -1){
         arrayBox[boxIndex].push(this.value);
     } 
 

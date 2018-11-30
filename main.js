@@ -1,5 +1,4 @@
 var cell = require("./cellClass.js");
-// var utils = require("./utils.js");
 var async = require('async');
 const readline = require('readline');
 
@@ -15,11 +14,10 @@ var ListeIter = [];
 var cellList = new Array();
 
 
-
 var recursiveAsyncReadLine = function () {
     rl.question('insert cell location and value as x,y,value: ', function (answer) {
         if (answer == 'finish'){
-            console.log(cellList);            
+            console.log(cellList);   
             return rl.close(); //closing RL and returning from function.
         } else {
             var cellCoordinate = answer;
@@ -27,11 +25,8 @@ var recursiveAsyncReadLine = function () {
             
             // find the cell that needs update
             var insertCell = new cell(chunk[0], chunk[1], chunk[2], [1,2,3,4]);
-            console.log("---- " +insertCell.locationX);
             var index = insertCell.findCellIndex(sudokuSize);
-            console.log("the cell index is " + index);
             var boxIndex = insertCell.findBoxIndex(Math.sqrt(sudokuSize));
-            console.log("the box index is " + boxIndex);
 
             cellList[index].setPosition(chunk[0], chunk[1]);  
             cellList[index].updateValue(chunk[2]);  
@@ -41,19 +36,8 @@ var recursiveAsyncReadLine = function () {
             arrayColumn = updatedList[1];
             arrayRaw = updatedList[2];
 
-            console.log("---column----");
-            console.log(arrayColumn);
-            console.log("---raw----");
-            console.log(arrayRaw);
-            console.log("---box----");
-            console.log(arrayBox);
-
             cellList[index].calculatePossibleValueList(sudokuSize, arrayBox, arrayColumn, arrayRaw);
-            console.log("the updated possible values to be used is ");
-            console.log(cellList[index].possibleValueList);
 
-            
-           // console.log(cellList);
 
             recursiveAsyncReadLine(); //Calling this function again to ask new question
         }   
@@ -81,10 +65,14 @@ async.series([
             for (var i = 0; i < sudokuSize; i++) {
                 initialPossibleValues.push(i + 1);
             }
-            for (var initiateIter = 0; initiateIter < numberOfCells; initiateIter++) {
-                cellList[initiateIter] = new cell(0, 0, 0, initialPossibleValues);
+
+            var sudokoCellIndex = 0;
+            for (var xIter = 0; xIter < sudokuSize; xIter++){
+                for (var yIter = 0; yIter < sudokuSize; yIter ++){
+                    cellList[sudokoCellIndex] = new cell(xIter, yIter, 0, initialPossibleValues);
+                    sudokoCellIndex ++;
+                }
             }
-           // console.log(cellList.length);
 
             callback();
         });
@@ -95,10 +83,10 @@ async.series([
             if (err) {
 
             } else {
-                callback();
+                callback()
+
             }
         });
-
 
     },
 
@@ -106,8 +94,7 @@ async.series([
     if (err) {
 
     } else {
-        console.log(cellList);
-        rl.close();
+        rl.close()
     }
 });
 
